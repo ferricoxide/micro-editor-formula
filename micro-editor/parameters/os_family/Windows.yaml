@@ -4,8 +4,8 @@
 # Set default values.
 ---
 values:
-  config: ''
-    install_root: ''
+  config:
+    install_root: 'C:\Program Files\Micro'
   pkg:
     download_sig: ''
     download_uri: ''
