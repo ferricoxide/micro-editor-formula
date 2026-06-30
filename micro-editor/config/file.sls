@@ -10,19 +10,3 @@
 include:
   - {{ sls_package_install }}
 
-micro-editor-config-file-file-managed:
-  file.managed:
-    - name: {{ micro_editor.config }}
-    - source: {{ files_switch(['example.tmpl'],
-                              lookup='micro-editor-config-file-file-managed'
-                 )
-              }}
-    - mode: 644
-    - user: root
-    - group: {{ micro_editor.rootgroup }}
-    - makedirs: True
-    - template: jinja
-    - require:
-      - sls: {{ sls_package_install }}
-    - context:
-        micro_editor: {{ micro_editor | json }}
