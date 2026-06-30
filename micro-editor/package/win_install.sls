@@ -30,6 +30,7 @@ Micro Editor Download Uri Extension Invalid:
         ------------------------------------------------------------------------
 
 {%- else %}
+
 Ensure {{ install_root }} Directory Exists:
   file.directory:
     - makedirs: True
@@ -42,8 +43,12 @@ Extract and Install Micro Editor package into {{ install_root }}:
     - name: {{ install_root }}
     - require:
       - file: Ensure {{ install_root }} Directory Exists
+    {%- if not download_sig %}
+    - skip_verify: True
+    {%- endif %}
     - source: {{ download_uri }}
     {%- if download_sig %}
     - source_hash: {{ download_sig }}
     {%- endif %}
+
 {%- endif %}
