@@ -4,7 +4,7 @@
 # Set default values.
 ---
 values:
-  config: ''
+  config:
     install_root: ''
   pkg:
     download_sig: ''
