@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Example Pillar data configuration for the micro-editor formula.
+---
+micro-editor:
+  lookup:
+    config:
+      # Set to True to add "Open with Micro" right-click Explorer options.
+      enable_context_menu: true
+
+      # Array of file extensions to bind automatically to micro.exe.
+      # Leave empty [] to skip making any system double-click associations.
+      file_associations:
+        - .json
+        - .log
+        - .sls
+        - .txt
+        - .yaml
+        - .yml
+
+      # Base path location where the binary suite will be deployed.
+      install_root: 'C:\Program Files\Micro'
+
+    pkg:
+      # Optional hash verification string for download archive validation.
+      # Format: '<hash_type>=<checksum_string>' (e.g., sha256=a1b2c3d4...)
+      download_sig: ''
+
+      # Targeted source URI location for the engine runtime archive zip.
+      # Air-gapped environments can point this to internal storage mirrors.
+      download_uri: 'https://example.com/files/micro-2.0.15-win64.zip'
+
+      # Core naming convention flag (primarily utilized on Linux variants).
+      name: micro-editor
+...

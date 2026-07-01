@@ -1,0 +1,146 @@
+# -*- coding: utf-8 -*-
+# vim: ft=sls
+
+{#- Get the `tplroot` from `tpldir` #}
+{%- set tplroot = tpldir.split('/')[0] %}
+{%- set sls_package_install = tplroot ~ '.package.install' %}
+{%- from tplroot ~ "/map.jinja" import mapdata as micro_editor with context %}
+{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+
+include:
+  - {{ sls_package_install }}
+
+{#- Extract configuration parameters #}
+{%- set install_root = micro_editor.config.get('install_root',
+    'C:\\Program Files\\Micro') %}
+{%- set binary_path = install_root ~ '\\micro.exe' %}
+{%- set desktop_lnk = 'C:\\Users\\Public\\Desktop\\Micro Editor.lnk' %}
+{%- set ps_profile = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0' ~
+    '\\profile.ps1' %}
+{%- set start_lnk = 'C:\\ProgramData\\Microsoft\\Windows\\Start ' ~
+    'Menu\\Programs\\Micro Editor.lnk' %}
+{%- set icon_location = 'C:\\Windows\\System32\\shell32.dll' %}
+{%- set icon_index = 269 %}
+{%- set link_description = 'Micro Editor CLI Utility' %}
+
+Add Micro Editor To System Path:
+  win_path.exists:
+    - name: '{{ install_root }}'
+    - require:
+      - sls: {{ sls_package_install }}
+
+Configure Conditional Shell Colorscheme:
+  file.append:
+    - makedirs: True
+    - name: '{{ ps_profile }}'
+    - text: |
+        function micro {
+            param([Parameter(ValueFromRemainingArguments=$true)]$RemainingArgs)
+            if ($env:AWS_SSM_SESSION_ID) {
+                & "{{ binary_path }}" -colorscheme simple @RemainingArgs
+            } else {
+                & "{{ binary_path }}" @RemainingArgs
+            }
+        }
+
+Configure Global Truecolor Support:
+  environ.setenv:
+    - name: MICRO_TRUECOLOR
+    - permanent: True
+    - value: '1'
+
+Create Desktop Shortcut:
+  shortcut.present:
+    - arguments: ''
+    - description: '{{ link_description }}'
+    - icon_index: {{ icon_index }}
+    - icon_location: '{{ icon_location }}'
+    - name: '{{ desktop_lnk }}'
+    - require:
+      - sls: {{ sls_package_install }}
+    - target: '{{ binary_path }}'
+    - working_dir: '{{ install_root }}'
+
+Create Global Configuration Directory:
+  file.directory:
+    - makedirs: True
+    - name: 'C:\ProgramData\micro'
+    - require:
+      - sls: {{ sls_package_install }}
+
+Create Start Menu Shortcut:
+  shortcut.present:
+    - arguments: ''
+    - description: '{{ link_description }}'
+    - icon_index: {{ icon_index }}
+    - icon_location: '{{ icon_location }}'
+    - name: '{{ start_lnk }}'
+    - require:
+      - sls: {{ sls_package_install }}
+    - target: '{{ binary_path }}'
+    - working_dir: '{{ install_root }}'
+
+Manage Micro Editor Custom Colorscheme:
+  file.managed:
+    - contents: |
+        include "monokai"
+        color-link color-column ",red"
+    - makedirs: True
+    - name: 'C:\Users\Default\.config\micro\colorschemes\monokai-custom.micro'
+    - require:
+      - sls: {{ sls_package_install }}
+
+Manage Micro Editor Global Default Settings:
+  file.managed:
+    - makedirs: True
+    - name: 'C:\Users\Default\.config\micro\settings.json'
+    - require:
+      - sls: {{ sls_package_install }}
+    - source: {{ files_switch(
+        ['settings.json', 'settings.json.jinja'],
+        lookup='Manage Micro Editor Global Default Settings'
+      ) }}
+
+{%- if micro_editor.config.get('enable_context_menu', True) %}
+
+Register Explorer Context Menu Base:
+  reg.present:
+    - name: 'HKEY_CLASSES_ROOT\*\shell\Open with Micro'
+    - require:
+      - sls: {{ sls_package_install }}
+    - vdata: 'Open with Micro'
+
+Register Explorer Context Menu Command:
+  reg.present:
+    - name: 'HKEY_CLASSES_ROOT\*\shell\Open with Micro\command'
+    - require:
+      - sls: {{ sls_package_install }}
+    - vdata: '"{{ binary_path }}" "%1"'
+
+Register Explorer Context Menu Icon:
+  reg.present:
+    - name: 'HKEY_CLASSES_ROOT\*\shell\Open with Micro'
+    - require:
+      - sls: {{ sls_package_install }}
+    - vdata: '{{ icon_location }},{{ icon_index }}'
+    - vname: 'Icon'
+
+{%- endif %}
+
+Register Micro Editor Programmatic Identifier Command:
+  reg.present:
+    - name: 'HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Micro.Assoc\shell\open\command'
+    - require:
+      - sls: {{ sls_package_install }}
+    - vdata: '"{{ binary_path }}" "%1"'
+
+{%- for ext in micro_editor.config.get('file_associations', []) %}
+
+Register {{ ext | upper }} Extension File Association:
+  reg.present:
+    - name: 'HKEY_LOCAL_MACHINE\SOFTWARE\Classes\{{ ext }}'
+    - require:
+      - reg: Register Micro Editor Programmatic Identifier Command
+    - vdata: 'Micro.Assoc'
+
+{%- endfor %}

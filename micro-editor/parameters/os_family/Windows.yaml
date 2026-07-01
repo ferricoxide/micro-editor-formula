@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set default values.
+---
+values:
+  config:
+    enable_context_menu: false
+    file_associations: []
+    install_root: 'C:\Program Files\Micro'
+  pkg:
+    download_sig: ''
+    download_uri: ''
+    name: micro-editor
+...

@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set default values.
+---
+values:
+  config:
+    enable_context_menu: ''
+    file_associations: []
+    install_root: ''
+  pkg:
+    download_sig: ''
+    download_uri: ''
+    name: micro-editor
+...
