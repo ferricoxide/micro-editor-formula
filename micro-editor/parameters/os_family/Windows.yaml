@@ -6,6 +6,7 @@
 values:
   config:
     enable_context_menu: False
+    file_associations: []
     install_root: 'C:\Program Files\Micro'
   pkg:
     download_sig: ''

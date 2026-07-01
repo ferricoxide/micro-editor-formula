@@ -6,6 +6,7 @@
 values:
   config:
     enable_context_menu: ''
+    file_associations: []
     install_root: ''
   pkg:
     download_sig: ''

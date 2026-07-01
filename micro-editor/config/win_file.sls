@@ -126,3 +126,21 @@ Register Explorer Context Menu Icon:
     - vname: 'Icon'
 
 {%- endif %}
+
+Register Micro Editor Programmatic Identifier Command:
+  reg.present:
+    - name: 'HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Micro.Assoc\shell\open\command'
+    - require:
+      - sls: {{ sls_package_install }}
+    - vdata: '"{{ binary_path }}" "%1"'
+
+{%- for ext in micro_editor.config.get('file_associations', []) %}
+
+Register {{ ext | upper }} Extension File Association:
+  reg.present:
+    - name: 'HKEY_LOCAL_MACHINE\SOFTWARE\Classes\{{ ext }}'
+    - require:
+      - reg: Register Micro Editor Programmatic Identifier Command
+    - vdata: 'Micro.Assoc'
+
+{%- endfor %}
