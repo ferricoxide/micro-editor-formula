@@ -5,6 +5,7 @@
 ---
 values:
   config:
+    enable_context_menu: ''
     install_root: ''
   pkg:
     download_sig: ''
