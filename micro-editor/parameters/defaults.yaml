@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
+#
+# Set default values.
 ---
 values:
   config:
-    desktop_shortcut: ''
     install_root: ''
-    shortcut_description: ''
-    start_menu_shortcut: ''
   pkg:
     download_sig: ''
     download_uri: ''

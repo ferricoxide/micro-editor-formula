@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
+#
+# Set default values.
 ---
 values:
   config:
-    desktop_shortcut: 'C:\Users\Public\Desktop\Micro Editor.lnk'
     install_root: 'C:\Program Files\Micro'
-    shortcut_description: 'Micro Editor CLI Utility'
-    start_menu_shortcut: 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Micro Editor.lnk'
   pkg:
     download_sig: ''
     download_uri: ''

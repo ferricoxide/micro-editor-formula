@@ -12,20 +12,20 @@ include:
 {#- Extract configuration parameters #}
 {%- set install_root = micro_editor.config.get('install_root',
     'C:\\Program Files\\Micro') %}
+{%- set icon_index = 269 %}
+{%- set icon_location = 'C:\\Windows\\System32\\shell32.dll' %}
+{%- set link_description = 'Micro Editor CLI Utility' %}
 {%- set binary_path = install_root ~ '\\micro.exe' %}
-{%- set desc = micro_editor.config.get('shortcut_description',
-    'Micro Editor CLI Utility') %}
-{%- set desktop_lnk = micro_editor.config.get('desktop_shortcut',
-    'C:\\Users\\Public\\Desktop\\Micro Editor.lnk') %}
-{%- set start_lnk = micro_editor.config.get('start_menu_shortcut',
-    'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Micro Editor.lnk') %}
+{%- set desktop_lnk = 'C:\\Users\\Public\\Desktop\\Micro Editor.lnk' %}
+{%- set start_lnk = 'C:\\ProgramData\\Microsoft\\Windows\\Start ' ~
+    'Menu\\Programs\\Micro Editor.lnk' %}
 
 Create Desktop Shortcut:
   shortcut.present:
     - arguments: ''
-    - description: '{{ desc }}'
-    - icon_index: 0
-    - icon_location: '{{ binary_path }}'
+    - description: '{{ link_description }}'
+    - icon_index: {{ icon_index }}
+    - icon_location: '{{ icon_location }}'
     - name: '{{ desktop_lnk }}'
     - require:
       - sls: {{ sls_package_install }}
@@ -35,9 +35,9 @@ Create Desktop Shortcut:
 Create Start Menu Shortcut:
   shortcut.present:
     - arguments: ''
-    - description: '{{ desc }}'
-    - icon_index: 0
-    - icon_location: '{{ binary_path }}'
+    - description: '{{ link_description }}'
+    - icon_index: {{ icon_index }}
+    - icon_location: '{{ icon_location }}'
     - name: '{{ start_lnk }}'
     - require:
       - sls: {{ sls_package_install }}
