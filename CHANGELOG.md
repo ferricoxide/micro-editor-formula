@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### 0.1.0
+
+**Released**: 2026.07.02
+
+**Summary**:
+
+*   Added Windows functionality:
+    *   Installs the Micro editor's extracted archive-contents to a specified directory (default `C:\Program Files\Micro`)
+    *   Ensures the editor is in the global system path
+    *   Sets a conditional shell color-scheme (accounting for differences between RDP and PS-over-SSM)
+    *   Globally enables "true-color" support
+    *   Creates desktop and start menu shortcuts/launcher-icons
+    *   (Optionally) Registers the editor to the Explorer context menus
+    *   Prepopulates new users' editor defaults
+    *   (Optionally) Creates default, pillar-defined file-type associations
+    *   Creates a custom color-scheme to make editor-cues (e.g., "too wide for file-type") more obvious. Derived from "Monokai" color-scheme
+*   Adds CI tests for Windows platforms (currently Windows Server 2022 and 2025)
+*   Updates pillar.example to explain Windows-specific parameters/inputs that may be specified via Pillar
+
+
 ### 0.0.1
 
 **Released**: 2026.07.01
