@@ -80,16 +80,26 @@ Create Start Menu Shortcut:
     - target: '{{ binary_path }}'
     - working_dir: '{{ install_root }}'
 
+Manage Micro Editor Custom Colorscheme:
+  file.managed:
+    - contents: |
+        include "monokai"
+        color-link color-column ",red"
+    - makedirs: True
+    - name: 'C:\Users\Default\.config\micro\colorschemes\monokai-custom.micro'
+    - require:
+      - sls: {{ sls_package_install }}
+
 Manage Micro Editor Global Default Settings:
   file.managed:
     - makedirs: True
     - name: 'C:\Users\Default\.config\micro\settings.json'
     - require:
       - sls: {{ sls_package_install }}
-    - source: {{ files_switch(['settings.json', 'settings.json.jinja'],
-                              lookup='Manage Micro Editor Global Default Settings'
-                 )
-              }}
+    - source: {{ files_switch(
+        ['settings.json', 'settings.json.jinja'],
+        lookup='Manage Micro Editor Global Default Settings'
+      ) }}
 
 {%- if micro_editor.config.get('enable_context_menu', True) %}
 
