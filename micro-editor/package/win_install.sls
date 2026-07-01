@@ -10,6 +10,7 @@
 {%- set download_uri = micro_editor.pkg.get('download_uri') %}
 {%- set install_root = micro_editor.config.get('install_root',
     'C:\\Program Files\\Micro') %}
+{%- set temp_extract = 'C:\\Windows\\Temp\\micro_staging' %}
 
 {%- if not download_uri %}
 
@@ -36,13 +37,17 @@ Ensure {{ install_root }} Directory Exists:
     - makedirs: True
     - name: {{ install_root }}
 
-Extract and Install Micro Editor package into {{ install_root }}:
+Ensure Temporary Staging Directory Is Clean:
+  file.absent:
+    - name: {{ temp_extract }}
+
+Extract Micro Editor Archive To Staging:
   archive.extracted:
     - archive_format: zip
     - enforce_toplevel: False
-    - name: {{ install_root }}
+    - name: {{ temp_extract }}
     - require:
-      - file: Ensure {{ install_root }} Directory Exists
+      - file: Ensure Temporary Staging Directory Is Clean
     {%- if not download_sig %}
     - skip_verify: True
     {%- endif %}
@@ -50,6 +55,19 @@ Extract and Install Micro Editor package into {{ install_root }}:
     {%- if download_sig %}
     - source_hash: {{ download_sig }}
     {%- endif %}
-    - strip_components: 1
+
+Move Extracted Components Into Target Destination:
+  file.rename:
+    - force: True
+    - name: {{ install_root }}
+    - require:
+      - archive: Extract Micro Editor Archive To Staging
+    - source: {{ temp_extract }}\micro-2.0.15
+
+Clean Up Staging Workspace:
+  file.absent:
+    - name: {{ temp_extract }}
+    - require:
+      - file: Move Extracted Components Into Target Destination
 
 {%- endif %}
