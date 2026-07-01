@@ -20,7 +20,8 @@ Remove Conditional Shell Colorscheme:
   file.replace:
     - ignore_if_missing: True
     - name: '{{ ps_profile }}'
-    - pattern: '(?s)function micro\s*\{.*?\}\s*'
+    - pattern: |
+        (?s)function micro\s*\{.*?AWS_SSM_SESSION_ID.*?\}\s*else\s*\{.*?\}\s*\}
     - repl: ''
 
 Remove Desktop Shortcut:
