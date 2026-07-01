@@ -43,6 +43,12 @@ Configure Conditional Shell Colorscheme:
             }
         }
 
+Configure Global Truecolor Support:
+  environ.setenv:
+    - name: MICRO_TRUECOLOR
+    - permanent: True
+    - value: '1'
+
 Create Desktop Shortcut:
   shortcut.present:
     - arguments: ''
