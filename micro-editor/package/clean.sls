@@ -3,14 +3,13 @@
 
 {#- Get the `tplroot` from `tpldir` #}
 {%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_config_clean = tplroot ~ '.config.clean' %}
-{%- from tplroot ~ "/map.jinja" import mapdata as micro_editor with context %}
 
 include:
-  - {{ sls_config_clean }}
+{%- if grains.kernel == "Linux" %}
+  - micro-editor.package.lin_clean
+{%- elif grains.kernel == "Windows" %}
+  - micro-editor.package.win_clean
+{%- endif %}
 
-micro-editor-package-clean-pkg-removed:
-  pkg.removed:
-    - name: {{ micro_editor.pkg.name }}
-    - require:
-      - sls: {{ sls_config_clean }}
+Avoid being a null-router (package/clean) - Micro Editor:
+  test.nop: []
