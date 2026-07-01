@@ -1,5 +1,5 @@
-{#- -*- coding: utf-8 -*- #}
-{#- vim: ft=sls #}
+# -*- coding: utf-8 -*-
+# vim: ft=sls
 
 {#- Get the `tplroot` from `tpldir` #}
 {%- set tplroot = tpldir.split('/')[0] %}
@@ -50,5 +50,6 @@ Extract and Install Micro Editor package into {{ install_root }}:
     {%- if download_sig %}
     - source_hash: {{ download_sig }}
     {%- endif %}
+    - strip_components: 1
 
 {%- endif %}
