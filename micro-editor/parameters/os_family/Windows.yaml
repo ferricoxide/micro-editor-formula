@@ -5,7 +5,7 @@
 ---
 values:
   config:
-    enable_context_menu: False
+    enable_context_menu: false
     file_associations: []
     install_root: 'C:\Program Files\Micro'
   pkg:
