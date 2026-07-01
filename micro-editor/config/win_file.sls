@@ -12,13 +12,19 @@ include:
 {#- Extract configuration parameters #}
 {%- set install_root = micro_editor.config.get('install_root',
     'C:\\Program Files\\Micro') %}
-{%- set icon_index = 269 %}
-{%- set icon_location = 'C:\\Windows\\System32\\shell32.dll' %}
-{%- set link_description = 'Micro Editor CLI Utility' %}
 {%- set binary_path = install_root ~ '\\micro.exe' %}
 {%- set desktop_lnk = 'C:\\Users\\Public\\Desktop\\Micro Editor.lnk' %}
 {%- set start_lnk = 'C:\\ProgramData\\Microsoft\\Windows\\Start ' ~
     'Menu\\Programs\\Micro Editor.lnk' %}
+{%- set icon_location = 'C:\\Windows\\System32\\shell32.dll' %}
+{%- set icon_index = 269 %}
+{%- set link_description = 'Micro Editor CLI Utility' %}
+
+Add Micro Editor To System Path:
+  win_path.exists:
+    - name: '{{ install_root }}'
+    - require:
+      - sls: {{ sls_package_install }}
 
 Create Desktop Shortcut:
   shortcut.present:
@@ -31,6 +37,13 @@ Create Desktop Shortcut:
       - sls: {{ sls_package_install }}
     - target: '{{ binary_path }}'
     - working_dir: '{{ install_root }}'
+
+Create Global Configuration Directory:
+  file.directory:
+    - makedirs: True
+    - name: 'C:\ProgramData\micro'
+    - require:
+      - sls: {{ sls_package_install }}
 
 Create Start Menu Shortcut:
   shortcut.present:
