@@ -15,18 +15,33 @@ include:
     'C:\\Program Files\\Micro') %}
 {%- set binary_path = install_root ~ '\\micro.exe' %}
 {%- set desktop_lnk = 'C:\\Users\\Public\\Desktop\\Micro Editor.lnk' %}
+{%- set ps_profile = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0' ~
+    '\\profile.ps1' %}
 {%- set start_lnk = 'C:\\ProgramData\\Microsoft\\Windows\\Start ' ~
     'Menu\\Programs\\Micro Editor.lnk' %}
 {%- set icon_location = 'C:\\Windows\\System32\\shell32.dll' %}
 {%- set icon_index = 269 %}
 {%- set link_description = 'Micro Editor CLI Utility' %}
-{%- set ctx_menu = micro_editor.config.get('enable_context_menu', True) %}
 
 Add Micro Editor To System Path:
   win_path.exists:
     - name: '{{ install_root }}'
     - require:
       - sls: {{ sls_package_install }}
+
+Configure Conditional Shell Colorscheme:
+  file.append:
+    - makedirs: True
+    - name: '{{ ps_profile }}'
+    - text: |
+        function micro {
+            param([Parameter(ValueFromRemainingArguments=$true)]$RemainingArgs)
+            if ($env:AWS_SSM_SESSION_ID) {
+                & "{{ binary_path }}" -colorscheme simple @RemainingArgs
+            } else {
+                & "{{ binary_path }}" @RemainingArgs
+            }
+        }
 
 Create Desktop Shortcut:
   shortcut.present:
