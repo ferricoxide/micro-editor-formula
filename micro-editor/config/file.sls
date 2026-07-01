@@ -9,4 +9,11 @@
 
 include:
   - {{ sls_package_install }}
+{%- if grains.kernel == "Linux" %}
+  - micro-editor.config.lin_file
+{%- elif grains.kernel == "Windows" %}
+  - micro-editor.config.win_file
+{%- endif %}
 
+Avoid being a null-router (config/file) - Micro Editor:
+  test.nop: []
